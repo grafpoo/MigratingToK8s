@@ -1,4 +1,4 @@
-package com.manning.pl.account;
+package com.manning.pl.profile;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,13 +18,13 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AccountServiceTest {
+public class ProfileServiceTest {
 
 	@InjectMocks
-	private AccountService accountService = new AccountService();
+	private ProfileService profileService = new ProfileService();
 
 	@Mock
-	private AccountRepository accountRepositoryMock;
+	private ProfileRepository profileRepositoryMock;
 
 	@Mock
 	private PasswordEncoder passwordEncoder;
@@ -35,9 +35,9 @@ public class AccountServiceTest {
 	@Test
 	public void shouldInitializeWithTwoDemoUsers() {
 		// act
-		accountService.initialize();
+		profileService.initialize();
 		// assert
-		verify(accountRepositoryMock, times(2)).save(any(Account.class));
+		verify(profileRepositoryMock, times(2)).save(any(Profile.class));
 	}
 
 	@Test
@@ -46,19 +46,19 @@ public class AccountServiceTest {
 		thrown.expect(UsernameNotFoundException.class);
 		thrown.expectMessage("user not found");
 
-		when(accountRepositoryMock.findOneByEmail("user@example.com")).thenReturn(null);
+		when(profileRepositoryMock.findOneByEmail("user@example.com")).thenReturn(null);
 		// act
-		accountService.loadUserByUsername("user@example.com");
+		profileService.loadUserByUsername("user@example.com");
 	}
 
 	@Test
 	public void shouldReturnUserDetails() {
 		// arrange
-		Account demoUser = new Account("user@example.com", "demo", "ROLE_USER");
-		when(accountRepositoryMock.findOneByEmail("user@example.com")).thenReturn(demoUser);
+		Profile demoUser = new Profile("user@example.com", "demo", "ROLE_USER");
+		when(profileRepositoryMock.findOneByEmail("user@example.com")).thenReturn(demoUser);
 
 		// act
-		UserDetails userDetails = accountService.loadUserByUsername("user@example.com");
+		UserDetails userDetails = profileService.loadUserByUsername("user@example.com");
 
 		// assert
 		assertThat(demoUser.getEmail()).isEqualTo(userDetails.getUsername());

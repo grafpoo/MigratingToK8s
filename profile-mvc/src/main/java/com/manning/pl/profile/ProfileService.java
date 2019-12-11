@@ -1,4 +1,4 @@
-package com.manning.pl.account;
+package com.manning.pl.profile;
 
 import java.util.Collections;
 
@@ -19,50 +19,50 @@ import org.springframework.context.annotation.ScopedProxyMode;
 
 @Service
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class AccountService implements UserDetailsService {
+public class ProfileService implements UserDetailsService {
 	
 	@Autowired
-	private AccountRepository accountRepository;
+	private ProfileRepository profileRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@PostConstruct	
 	protected void initialize() {
-		save(new Account("user", "demo", "ROLE_USER"));
-		save(new Account("admin", "admin", "ROLE_ADMIN"));
+		save(new Profile("user", "demo", "ROLE_USER"));
+		save(new Profile("admin", "admin", "ROLE_ADMIN"));
 	}
 
 	@Transactional
-	public Account save(Account account) {
-		account.setPassword(passwordEncoder.encode(account.getPassword()));
-		accountRepository.save(account);
-		return account;
+	public Profile save(Profile profile) {
+		profile.setPassword(passwordEncoder.encode(profile.getPassword()));
+		profileRepository.save(profile);
+		return profile;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Account account = accountRepository.findOneByEmail(username);
-		if(account == null) {
+		Profile profile = profileRepository.findOneByEmail(username);
+		if(profile == null) {
 			throw new UsernameNotFoundException("user not found");
 		}
-		return createUser(account);
+		return createUser(profile);
 	}
 	
-	public void signin(Account account) {
-		SecurityContextHolder.getContext().setAuthentication(authenticate(account));
+	public void signin(Profile profile) {
+		SecurityContextHolder.getContext().setAuthentication(authenticate(profile));
 	}
 	
-	private Authentication authenticate(Account account) {
-		return new UsernamePasswordAuthenticationToken(createUser(account), null, Collections.singleton(createAuthority(account)));		
+	private Authentication authenticate(Profile profile) {
+		return new UsernamePasswordAuthenticationToken(createUser(profile), null, Collections.singleton(createAuthority(profile)));
 	}
 	
-	private User createUser(Account account) {
-		return new User(account.getEmail(), account.getPassword(), Collections.singleton(createAuthority(account)));
+	private User createUser(Profile profile) {
+		return new User(profile.getEmail(), profile.getPassword(), Collections.singleton(createAuthority(profile)));
 	}
 
-	private GrantedAuthority createAuthority(Account account) {
-		return new SimpleGrantedAuthority(account.getRole());
+	private GrantedAuthority createAuthority(Profile profile) {
+		return new SimpleGrantedAuthority(profile.getRole());
 	}
 
 }

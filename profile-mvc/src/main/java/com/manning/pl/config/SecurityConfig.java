@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
-import com.manning.pl.account.AccountService;
+import com.manning.pl.profile.ProfileService;
 
 @Configuration
 @EnableWebSecurity
@@ -22,11 +22,11 @@ import com.manning.pl.account.AccountService;
 class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private AccountService accountService;
+    private ProfileService profileService;
 
     @Bean
     public TokenBasedRememberMeServices rememberMeServices() {
-        return new TokenBasedRememberMeServices("remember-me-key", accountService);
+        return new TokenBasedRememberMeServices("remember-me-key", profileService);
     }
 
     @Bean
@@ -38,7 +38,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
             .eraseCredentials(true)
-            .userDetailsService(accountService)
+            .userDetailsService(profileService)
             .passwordEncoder(passwordEncoder());
     }
 

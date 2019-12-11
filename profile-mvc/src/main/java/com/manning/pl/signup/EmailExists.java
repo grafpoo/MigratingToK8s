@@ -1,7 +1,7 @@
 package com.manning.pl.signup;
 
 import org.springframework.stereotype.Component;
-import com.manning.pl.account.AccountRepository;
+import com.manning.pl.profile.ProfileRepository;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -31,10 +31,10 @@ public @interface EmailExists {
 @Component
 class EmailExistsValidator implements ConstraintValidator<com.manning.pl.signup.EmailExists, String> {
 
-    private final AccountRepository accountRepository;
+    private final ProfileRepository profileRepository;
 
-    public EmailExistsValidator(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public EmailExistsValidator(ProfileRepository profileRepository) {
+        this.profileRepository = profileRepository;
     }
 
 
@@ -45,6 +45,6 @@ class EmailExistsValidator implements ConstraintValidator<com.manning.pl.signup.
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return !accountRepository.exists(value);
+        return !profileRepository.exists(value);
     }
 }

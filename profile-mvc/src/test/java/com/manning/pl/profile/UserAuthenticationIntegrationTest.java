@@ -1,4 +1,4 @@
-package com.manning.pl.account;
+package com.manning.pl.profile;
 
 import org.junit.Assert;
 import org.junit.Test;

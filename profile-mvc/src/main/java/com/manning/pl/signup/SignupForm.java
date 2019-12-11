@@ -2,7 +2,7 @@ package com.manning.pl.signup;
 
 import org.hibernate.validator.constraints.*;
 
-import com.manning.pl.account.Account;
+import com.manning.pl.profile.Profile;
 
 public class SignupForm {
 
@@ -34,7 +34,7 @@ public class SignupForm {
 		this.password = password;
 	}
 
-	public Account createAccount() {
-        return new Account(getEmail(), getPassword(), "ROLE_USER");
+	public Profile createAccount() {
+        return new Profile(getEmail(), getPassword(), "ROLE_USER");
 	}
 }
