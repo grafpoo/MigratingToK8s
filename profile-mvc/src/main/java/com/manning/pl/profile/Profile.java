@@ -7,11 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
 @Data
-//@Table(name = "account")
+@Table(name = "emp_profile")
 public class Profile implements java.io.Serializable {
 
 	@Id
