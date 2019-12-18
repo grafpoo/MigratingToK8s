@@ -24,6 +24,9 @@
                 <li th:classappend="${module == 'about' ? 'active' : ''}">
                     <a href="#about" th:href="@{/about}">About</a>
                 </li>
+                <li th:classappend="${module == 'about' ? 'active' : ''}">
+                    <a href="#profile" th:href="@{/profile/current}">Profile</a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li sec:authorize="!isAuthenticated()">

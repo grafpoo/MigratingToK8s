@@ -29,7 +29,8 @@ public class ProfileService implements UserDetailsService {
 
 	@PostConstruct	
 	protected void initialize() {
-		save(new Profile("admin", "donttell", "ROLE_ADMIN"));
+		save(new Profile("admin", "password", "ROLE_ADMIN"));
+		save(new Profile("user", "password", "ROLE_USER"));
 	}
 
 	@Transactional
