@@ -9,7 +9,7 @@
     <packaging>war</packaging>
     <properties>
         <springVersion>4.0.7.RELEASE</springVersion>
-        <springDataJpaVersion>1.3.2.RELEASE</springDataJpaVersion>
+        <springDataJpaVersion>1.11.23.RELEASE</springDataJpaVersion>
         <hibernateVersion>4.1.6.Final</hibernateVersion>
         <hibernateEntityManagerVersion>4.0.1.Final</hibernateEntityManagerVersion>
         <thymeleafVersion>2.1.3.RELEASE</thymeleafVersion>
