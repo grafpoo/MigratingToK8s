@@ -1,7 +1,7 @@
-.classpath
+/build/
+/bin/
+.springBeans
+.settings
 .project
-target/
-bin/
-.settings/
-.idea/
-*.iml
+.classpath
+.gradle

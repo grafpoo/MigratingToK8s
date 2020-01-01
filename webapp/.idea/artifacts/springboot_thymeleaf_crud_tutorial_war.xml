@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="springboot-thymeleaf-crud-tutorial:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>springboot-thymeleaf-crud-tutorial</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="SpringMVCHibernateCRUD.war">
+      <element id="artifact" artifact-name="springboot-thymeleaf-crud-tutorial:war exploded" />
+    </root>
+  </artifact>
+</component>

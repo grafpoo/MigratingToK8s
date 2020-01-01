@@ -1,0 +1,9 @@
+/Users/jguthrie/workspace/MigratingToK8s/webapp/src/main/java/com/manning/pl/config/WebMvcConfig.java
+/Users/jguthrie/workspace/MigratingToK8s/webapp/src/main/java/com/manning/pl/config/ApplicationConfig.java
+/Users/jguthrie/workspace/MigratingToK8s/webapp/src/main/java/com/manning/pl/config/JpaConfig.java
+/Users/jguthrie/workspace/MigratingToK8s/webapp/src/main/java/com/manning/pl/Application.java
+/Users/jguthrie/workspace/MigratingToK8s/webapp/src/main/java/com/manning/pl/profile/EmployeeRepository.java
+/Users/jguthrie/workspace/MigratingToK8s/webapp/src/main/java/com/manning/pl/profile/Employee.java
+/Users/jguthrie/workspace/MigratingToK8s/webapp/src/main/java/com/manning/pl/config/WebAppInitializer.java
+/Users/jguthrie/workspace/MigratingToK8s/webapp/src/main/java/com/manning/pl/profile/EmployeeController.java
+/Users/jguthrie/workspace/MigratingToK8s/webapp/src/main/java/com/manning/pl/profile/EmployeeService.java
