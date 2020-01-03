@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="3" failures="0" name="liveproject.m2k8s.web.ProfileControllerTest" time="0.916" errors="0" skipped="0">
+<testsuite tests="3" failures="0" name="liveproject.m2k8s.web.ProfileControllerTest" time="0.885" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_192.jdk/Contents/Home/jre/lib"/>
@@ -64,7 +64,7 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="liveproject.m2k8s.web.ProfileControllerTest" name="shouldShowRegistration" time="0.696"/>
-  <testcase classname="liveproject.m2k8s.web.ProfileControllerTest" name="shouldFailValidationWithNoData" time="0.164"/>
-  <testcase classname="liveproject.m2k8s.web.ProfileControllerTest" name="shouldProcessRegistration" time="0.056"/>
+  <testcase classname="liveproject.m2k8s.web.ProfileControllerTest" name="shouldShowRegistration" time="0.688"/>
+  <testcase classname="liveproject.m2k8s.web.ProfileControllerTest" name="shouldFailValidationWithNoData" time="0.15"/>
+  <testcase classname="liveproject.m2k8s.web.ProfileControllerTest" name="shouldProcessRegistration" time="0.047"/>
 </testsuite>

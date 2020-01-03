@@ -1,5 +1,8 @@
 package liveproject.m2k8s;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -7,8 +10,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Email;
 
+@Entity
 public class Profile {
 
+  @Id
+  @GeneratedValue
   private Long id;
   
   @NotNull
