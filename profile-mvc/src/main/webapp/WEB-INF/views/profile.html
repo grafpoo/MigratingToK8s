@@ -11,9 +11,25 @@
 
     <div id="content">
       <h1>Your Profile</h1>
+      <form action="#" th:action="@{/profile/{username}(username=${profile.username})}" th:object="${profile}" method="post">
+        <input type="text" name="username" th:value="${profile.username}" />
+        <input type="text" name="firstName" th:value="${profile.firstName}" />
+        <input type="text" name="lastName" th:value="${profile.lastName}" />
+        <input type="text" name="email" th:value="${profile.email}" />
+        <input type="submit" class="btn btn-primary" value="Update Profile" />
+      </form>
       <span th:text="${profile.username}">username</span><br/>
       <span th:text="${profile.firstName}">First</span> <span th:text="${profile.lastName}">Last</span><br/>
       <span th:text="${profile.email}">email</span>
+    </div>
+    <div>
+      <img src="abc.png" th:attr="src=@{/images(name=${profile.username})},alt=${profile.username}" />
+      <img src="/image" alt="no picture"/>
+      <form method="POST" action="${profile.username}/imageUpload" enctype="multipart/form-data">
+        <input type="file" name="file" /><br/>
+        <input type="submit" value="Submit" />
+      </form>
+
     </div>
 
     <div id="footer" th:include="page :: copy"></div>
