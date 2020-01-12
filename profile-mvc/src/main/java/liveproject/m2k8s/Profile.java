@@ -6,13 +6,17 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Email;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Profile {
 
   @Id
@@ -40,9 +44,8 @@ public class Profile {
   private String email;
 
   private String imageFileName;
+  private String imageFileContentType;
 
-  public Profile() {}
-  
   public Profile(String username, String password, String firstName, String lastName, String email) {
     this(null, username, password, firstName, lastName, email);
   }

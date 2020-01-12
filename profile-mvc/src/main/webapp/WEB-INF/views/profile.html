@@ -24,9 +24,10 @@
       <span th:text="${profile.email}">email</span>
     </div>
     <div>
-      <img src="abc.png" th:attr="src=@{/images(name=${profile.username})},alt=${profile.username}" />
-      <img src="/image" alt="no picture"/>
-      <form method="POST" action="${profile.username}/imageUpload" enctype="multipart/form-data">
+      <p th:if="${imageMessage} != null" th:text="${imageMessage}"></p>
+      <p><img th:width="500" src="abc.png" th:attr="src=@{${'/profile/' +profile.username + '/image.jpg'}},alt=${profile.username}" /></p>
+      <form action="#" th:action="@{/profile/upload/{username}(username=${profile.username})}"
+            th:object="${profile}" method="post" enctype="multipart/form-data">
         <input type="file" name="file" /><br/>
         <input type="submit" value="Submit" />
       </form>
