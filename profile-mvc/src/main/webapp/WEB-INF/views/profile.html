@@ -12,10 +12,11 @@
     <div id="content">
       <h1>Your Profile</h1>
       <form action="#" th:action="@{/profile/{username}(username=${profile.username})}" th:object="${profile}" method="post">
-        <input type="text" name="username" th:value="${profile.username}" />
-        <input type="text" name="firstName" th:value="${profile.firstName}" />
-        <input type="text" name="lastName" th:value="${profile.lastName}" />
-        <input type="text" name="email" th:value="${profile.email}" />
+        <input type="hidden" name="username" th:value="${profile.username}" /> <br/>
+        <input type="text" name="username" th:value="${profile.username}" disabled="disabled" /> <br/>
+        <input type="text" name="firstName" th:value="${profile.firstName}" /> <br/>
+        <input type="text" name="lastName" th:value="${profile.lastName}" /> <br/>
+        <input type="text" name="email" th:value="${profile.email}" /> <br/>
         <input type="submit" class="btn btn-primary" value="Update Profile" />
       </form>
       <span th:text="${profile.username}">username</span><br/>

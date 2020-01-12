@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,11 +65,29 @@ public class ProfileController {
   }
 
   @RequestMapping(value="/{username}", method=POST)
-  public String updateProfile(@PathVariable String username, Model model) {
-    Profile profile = profileRepository.findByUsername(username);
-    Object profileModel = model.asMap().get("profile");
+  @Transactional
+  public String updateProfile(@PathVariable String username, @ModelAttribute Profile profile, Model model) {
 //    profile.setEmail(StringUtils.isEmpty());
-
+    Profile dbProfile = profileRepository.findByUsername(username);
+    boolean dirty = false;
+    if (!StringUtils.isEmpty(profile.getEmail())
+            && !profile.getEmail().equals(dbProfile.getEmail())) {
+      dbProfile.setEmail(profile.getEmail());
+      dirty = true;
+    }
+    if (!StringUtils.isEmpty(profile.getFirstName())
+            && !profile.getFirstName().equals(dbProfile.getFirstName())) {
+      dbProfile.setFirstName(profile.getFirstName());
+      dirty = true;
+    }
+    if (!StringUtils.isEmpty(profile.getLastName())
+            && !profile.getLastName().equals(dbProfile.getLastName())) {
+      dbProfile.setLastName(profile.getLastName());
+      dirty = true;
+    }
+    if (dirty) {
+      profileRepository.save(dbProfile);
+    }
     model.addAttribute(profile);
     return "profile";
   }
