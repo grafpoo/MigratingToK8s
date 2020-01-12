@@ -77,7 +77,6 @@ public class ProfileController {
     @RequestMapping(value = "/{username}", method = POST)
     @Transactional
     public String updateProfile(@PathVariable String username, @ModelAttribute Profile profile, Model model) {
-//    profile.setEmail(StringUtils.isEmpty());
         Profile dbProfile = profileRepository.findByUsername(username);
         boolean dirty = false;
         if (!StringUtils.isEmpty(profile.getEmail())

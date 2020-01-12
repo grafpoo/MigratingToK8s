@@ -40,7 +40,6 @@ class JpaConfig {
         entityManagerFactoryBean.setDataSource(dataSource);
 
         String entities = ClassUtils.getPackageName(Application.class);
-//        String converters = ClassUtils.getPackageName(Jsr310JpaConverters.class);
         entityManagerFactoryBean.setPackagesToScan(entities);
 
         entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
