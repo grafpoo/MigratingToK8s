@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Email;
 
 @Data
-@Entity
+@Entity(name = "emp_profile")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Profile {
