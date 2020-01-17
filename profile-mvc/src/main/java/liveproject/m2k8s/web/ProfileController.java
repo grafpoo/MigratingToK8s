@@ -2,6 +2,7 @@ package liveproject.m2k8s.web;
 
 import liveproject.m2k8s.Profile;
 import liveproject.m2k8s.data.ProfileRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
+@Slf4j
 @RequestMapping("/profile")
 public class ProfileController {
 
@@ -69,6 +71,7 @@ public class ProfileController {
 
     @RequestMapping(value = "/{username}", method = GET)
     public String showProfile(@PathVariable String username, Model model) {
+        log.debug("Reading model for: "+username);
         Profile profile = profileRepository.findByUsername(username);
         model.addAttribute(profile);
         return "profile";
@@ -77,6 +80,7 @@ public class ProfileController {
     @RequestMapping(value = "/{username}", method = POST)
     @Transactional
     public String updateProfile(@PathVariable String username, @ModelAttribute Profile profile, Model model) {
+        log.debug("Updating model for: "+username);
         Profile dbProfile = profileRepository.findByUsername(username);
         boolean dirty = false;
         if (!StringUtils.isEmpty(profile.getEmail())
@@ -104,6 +108,7 @@ public class ProfileController {
     @RequestMapping(value = "/{username}/image.jpg", method = GET, produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
     public byte[] displayImage(@PathVariable String username) throws IOException {
+        log.debug("Reading image for: "+username);
         InputStream in = null;
         try {
             Profile profile = profileRepository.findByUsername(username);
@@ -124,6 +129,7 @@ public class ProfileController {
     @Transactional
     public String uploadImage(@PathVariable String username, @RequestParam("file") MultipartFile file,
                               RedirectAttributes redirectAttributes) {
+        log.debug("Updating image for: "+username);
         if (file.isEmpty()) {
             redirectAttributes.addFlashAttribute("imageMessage", "Empty file - please select a file to upload");
             return "redirect:/profile/" + username;
