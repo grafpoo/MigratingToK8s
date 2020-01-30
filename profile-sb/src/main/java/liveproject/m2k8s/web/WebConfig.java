@@ -7,10 +7,10 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.spring4.view.ThymeleafViewResolver;
+import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-import org.thymeleaf.templateresolver.TemplateResolver;
 
 @Configuration
 @EnableWebMvc
@@ -24,15 +24,15 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     return viewResolver;
   }
   @Bean
-  public SpringTemplateEngine templateEngine(TemplateResolver templateResolver) {
+  public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
     SpringTemplateEngine templateEngine = new SpringTemplateEngine();
     templateEngine.setTemplateResolver(templateResolver);
     return templateEngine;
   }
 
   @Bean
-  public TemplateResolver templateResolver() {
-    TemplateResolver templateResolver = new ServletContextTemplateResolver();
+  public ServletContextTemplateResolver templateResolver() {
+    ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
     templateResolver.setPrefix("/WEB-INF/views/");
     templateResolver.setSuffix(".html");
     templateResolver.setTemplateMode("HTML5");
