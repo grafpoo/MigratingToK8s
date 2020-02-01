@@ -2,7 +2,7 @@ package liveproject.m2k8s.web;
 
 import liveproject.m2k8s.Profile;
 import liveproject.m2k8s.data.ProfileRepository;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.atLeastOnce;

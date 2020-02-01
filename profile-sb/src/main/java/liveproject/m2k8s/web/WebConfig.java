@@ -6,16 +6,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.ITemplateResolver;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 @Configuration
 @EnableWebMvc
 @ComponentScan("liveproject.m2k8s")
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
 
   @Bean
   public ViewResolver viewResolver(SpringTemplateEngine templateEngine) {
@@ -31,8 +31,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
   }
 
   @Bean
-  public ServletContextTemplateResolver templateResolver() {
-    ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
+  public ClassLoaderTemplateResolver templateResolver() {
+    ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
     templateResolver.setPrefix("/WEB-INF/views/");
     templateResolver.setSuffix(".html");
     templateResolver.setTemplateMode("HTML5");
