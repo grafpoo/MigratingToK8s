@@ -17,7 +17,9 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 @EnableWebMvc
 @ComponentScan("liveproject.m2k8s")
 public class WebConfig implements WebMvcConfigurer {
-
+  private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
+          "classpath:/META-INF/resources/", "classpath:/resources/",
+          "classpath:/static/", "classpath:/public/" };
   @Bean
   public ViewResolver viewResolver(SpringTemplateEngine templateEngine) {
     ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
@@ -47,7 +49,13 @@ public class WebConfig implements WebMvcConfigurer {
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/public/**").addResourceLocations("/public/");
+    if (!registry.hasMappingForPattern("/webjars/**")) {
+      registry.addResourceHandler("/webjars/**").addResourceLocations(
+              "classpath:/META-INF/resources/webjars/");
+    }
+    if (!registry.hasMappingForPattern("/**")) {
+      registry.addResourceHandler("/**").addResourceLocations(
+              CLASSPATH_RESOURCE_LOCATIONS);
+    }
   }
-
 }
