@@ -1,9 +1,0 @@
-/build/
-/target/
-/bin/
-.springBeans
-.settings
-.project
-.classpath
-.gradle
-.DS_Store
