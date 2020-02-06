@@ -1,0 +1,10 @@
+/build/
+/target/
+/bin/
+.idea
+.springBeans
+.settings
+.project
+.classpath
+.gradle
+.DS_Store
