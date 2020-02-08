@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -57,13 +59,15 @@ public class ProfileController {
 //        return "registerForm";
 //    }
 
-    @PostMapping(value = "/")
+    @PostMapping(value = "/register")
+    @ResponseStatus(HttpStatus.CREATED)
     public Profile processRegistration(@Valid @RequestBody Profile profile) {
         profileRepository.save(profile);
         return profile;
     }
 
     @GetMapping(value = "/{username}")
+    @ResponseStatus(HttpStatus.OK)
     public Profile showProfile(@PathVariable String username) {
         Profile profile = profileRepository.findByUsername(username);
         return profile;

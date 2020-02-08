@@ -12,24 +12,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.StreamUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,22 +80,17 @@ public class ProfileControllerTest {
   }
 
   @Test
-  @Ignore
   public void shouldProcessRegistration() throws Exception {
-    ProfileRepository mockRepository = mock(ProfileRepository.class);
-    when(mockRepository.save(unsaved)).thenReturn(saved);
+    when(profileRepository.save(unsaved)).thenReturn(saved);
 
-    ProfileController controller = new ProfileController(mockRepository);
-    MockMvc mockMvc = standaloneSetup(controller).build();
+    String profileJson = objectMapper.writeValueAsString(unsaved);
 
     mockMvc.perform(post("/profile/register")
-           .param("firstName", "Jack")
-           .param("lastName", "Bauer")
-           .param("username", "jbauer")
-           .param("password", "24hours")
-           .param("email", "jbauer@ctu.gov"))
-           .andExpect(redirectedUrl("/profile/jbauer"));
-    
-    verify(mockRepository, atLeastOnce()).save(unsaved);
+            .content(profileJson)
+            .contentType(MediaType.APPLICATION_JSON_UTF8))
+            .andDo(print())
+            .andExpect(status().isCreated());
+
+    verify(profileRepository, atLeastOnce()).save(unsaved);
   }
 }
