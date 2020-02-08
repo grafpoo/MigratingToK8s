@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,6 +76,7 @@ public class ProfileController {
 
     @PutMapping(value = "/{username}")
     @Transactional
+    @ResponseStatus(HttpStatus.OK)
     public Profile updateProfile(@RequestBody Profile profile) {
         Profile dbProfile = profileRepository.findByUsername(profile.getUsername());
         boolean dirty = false;
@@ -101,8 +103,9 @@ public class ProfileController {
 
     @RequestMapping(value = "/{username}/image.jpg", method = GET, produces = MediaType.IMAGE_JPEG_VALUE)
     @ResponseBody
-    public byte[] displayImage(@PathVariable String username) throws IOException {
-        log.debug("Reading image for: "+username);
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> displayImage(@PathVariable String username) {
+        log.debug("Reading image for: " + username);
         InputStream in = null;
         try {
             Profile profile = profileRepository.findByUsername(username);
@@ -111,27 +114,36 @@ public class ProfileController {
             } else {
                 in = new FileInputStream(profile.getImageFileName());
             }
-            return IOUtils.toByteArray(in);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(IOUtils.toByteArray(in));
+        } catch (IOException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(("Error: " + e.getMessage()).getBytes());
         } finally {
             if (in != null) {
-                in.close();
+                try { in.close(); } catch (IOException e) { e.printStackTrace(); }
             }
         }
     }
 
     @RequestMapping(value = "/upload/{username}", method = POST)
     @Transactional
-    public String uploadImage(@PathVariable String username, @RequestParam("file") MultipartFile file,
-                              RedirectAttributes redirectAttributes) {
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> uploadImage(@PathVariable String username, @RequestParam("file") MultipartFile file,
+                                            RedirectAttributes redirectAttributes) {
         log.debug("Updating image for: "+username);
         if (file.isEmpty()) {
-            redirectAttributes.addFlashAttribute("imageMessage", "Empty file - please select a file to upload");
-            return "redirect:/profile/" + username;
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Empty file - please select a file to upload");
         }
         String fileName = file.getOriginalFilename();
         if (!(fileName.endsWith("jpg") || fileName.endsWith("JPG"))) {
-            redirectAttributes.addFlashAttribute("imageMessage", "JPG files only - please select a file to upload");
-            return "redirect:/profile/" + username;
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("JPG files only - please select a file to upload");
         }
         try {
             final String contentType = file.getContentType();
@@ -143,12 +155,14 @@ public class ProfileController {
             profile.setImageFileName(path.toString());
             profile.setImageFileContentType(contentType);
             profileRepository.save(profile);
-            redirectAttributes.addFlashAttribute("imageMessage",
-                    "You successfully uploaded '" + fileName + "'");
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("You successfully uploaded '" + fileName + "'");
         } catch (IOException e) {
-            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
         }
-        return "redirect:/profile/" + username;
     }
 
 }
