@@ -8,16 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -32,7 +33,7 @@ import java.nio.file.Paths;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("/profile")
 public class ProfileController {
@@ -50,38 +51,28 @@ public class ProfileController {
         this.profileRepository = profileRepository;
     }
 
-    @RequestMapping(value = "/register", method = GET)
-    public String showRegistrationForm(Model model) {
-        model.addAttribute(new Profile());
-        return "registerForm";
-    }
+//    @GetMapping(value = "/register")
+//    public String showRegistrationForm(Model model) {
+//        model.addAttribute(new Profile());
+//        return "registerForm";
+//    }
 
-    @RequestMapping(value = "/register", method = POST)
-    @Transactional
-    public String processRegistration(
-            @Valid Profile profile,
-            Errors errors) {
-        if (errors.hasErrors()) {
-            return "registerForm";
-        }
-
+    @PostMapping(value = "/")
+    public Profile processRegistration(@Valid @RequestBody Profile profile) {
         profileRepository.save(profile);
-        return "redirect:/profile/" + profile.getUsername();
+        return profile;
     }
 
-    @RequestMapping(value = "/{username}", method = GET)
-    public String showProfile(@PathVariable String username, Model model) {
-        log.debug("Reading model for: "+username);
+    @GetMapping(value = "/{username}")
+    public Profile showProfile(@PathVariable String username) {
         Profile profile = profileRepository.findByUsername(username);
-        model.addAttribute(profile);
-        return "profile";
+        return profile;
     }
 
-    @RequestMapping(value = "/{username}", method = POST)
+    @PutMapping(value = "/{username}")
     @Transactional
-    public String updateProfile(@PathVariable String username, @ModelAttribute Profile profile, Model model) {
-        log.debug("Updating model for: "+username);
-        Profile dbProfile = profileRepository.findByUsername(username);
+    public Profile updateProfile(@RequestBody Profile profile) {
+        Profile dbProfile = profileRepository.findByUsername(profile.getUsername());
         boolean dirty = false;
         if (!StringUtils.isEmpty(profile.getEmail())
                 && !profile.getEmail().equals(dbProfile.getEmail())) {
@@ -101,8 +92,7 @@ public class ProfileController {
         if (dirty) {
             profileRepository.save(dbProfile);
         }
-        model.addAttribute(profile);
-        return "profile";
+        return profile;
     }
 
     @RequestMapping(value = "/{username}/image.jpg", method = GET, produces = MediaType.IMAGE_JPEG_VALUE)

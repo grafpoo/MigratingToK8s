@@ -1,36 +1,81 @@
 package liveproject.m2k8s.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import liveproject.m2k8s.Profile;
 import liveproject.m2k8s.data.ProfileRepository;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class ProfileControllerTest {
+  @Autowired
+  ObjectMapper objectMapper;
+
+  @Autowired
+  private MockMvc mockMvc;
+
+  @MockBean
+  private ProfileRepository profileRepository;
+
+  private Profile unsaved;
+  private Profile saved;
+
+  @Before
+  public void setup() throws Exception {
+    unsaved = new Profile("cheese", "stilton", "Chuck", "Cheese", "cecheese@example.com");
+    saved = new Profile(24L, "cheese", "stilton", "Chuck", "Cheese", "cecheese@example.com");
+  }
 
   @Test
-  public void shouldShowRegistration() throws Exception {
-    MockMvc mockMvc = standaloneSetup(buildProfileController()).build();
-    mockMvc.perform(get("/profile/register"))
-           .andExpect(view().name("registerForm"));
+  public void getProfile_whenAppContainsProfile_returnProfileSuccessfully() throws Exception {
+
+    when(profileRepository.findByUsername(any())).thenReturn(saved);
+
+    String savedJson = objectMapper.writeValueAsString(saved);
+
+    mockMvc.perform(get("/profile/cheese"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().json(savedJson, true));
   }
-  
+
   @Test
+  @Ignore
   public void shouldProcessRegistration() throws Exception {
     ProfileRepository mockRepository = mock(ProfileRepository.class);
-    Profile unsaved = new Profile("jbauer", "24hours", "Jack", "Bauer", "jbauer@ctu.gov");
-    Profile saved = new Profile(24L, "jbauer", "24hours", "Jack", "Bauer", "jbauer@ctu.gov");
     when(mockRepository.save(unsaved)).thenReturn(saved);
 
     ProfileController controller = new ProfileController(mockRepository);
@@ -45,23 +90,5 @@ public class ProfileControllerTest {
            .andExpect(redirectedUrl("/profile/jbauer"));
     
     verify(mockRepository, atLeastOnce()).save(unsaved);
-  }
-
-  @Test
-  public void shouldFailValidationWithNoData() throws Exception {
-    MockMvc mockMvc = standaloneSetup(buildProfileController()).build();
-    
-    mockMvc.perform(post("/profile/register"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("registerForm"))
-        .andExpect(model().errorCount(5))
-        .andExpect(model().attributeHasFieldErrors(
-            "profile", "firstName", "lastName", "username", "password", "email"));
-  }
-
-  private ProfileController buildProfileController() {
-    ProfileRepository mockRepository = mock(ProfileRepository.class);
-    ProfileController controller = new ProfileController(mockRepository);
-    return controller;
   }
 }
