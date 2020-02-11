@@ -8,7 +8,7 @@ docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -d mysql/my
 docker exec -it <34879c7c6016> /bin/bash
 ```
 
-## Creat database and user in this MySQL (using passowrd *password* configured above)
+## Creat database and user in this MySQL (using password *password* configured above)
 ```
 mysql -u root -p <<EOF
 create database profiles;
