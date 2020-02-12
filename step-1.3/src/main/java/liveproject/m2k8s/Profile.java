@@ -6,12 +6,14 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.validator.constraints.Email;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Data
 @Entity(name = "emp_profile")
@@ -21,26 +23,32 @@ public class Profile {
 
   @Id
   @GeneratedValue
+  @ApiModelProperty(notes = "Internal ID")
   private Long id;
   
   @NotNull
-  @Size(min=5, max=16, message="{username.size}")
+  @Size(min=4, max=16, message="{username.size}")
+  @ApiModelProperty(notes = "Username")
   private String username;
 
   @NotNull
   @Size(min=5, max=25, message="{password.size}")
+  @ApiModelProperty(notes = "Password")
   private String password;
   
   @NotNull
   @Size(min=2, max=30, message="{firstName.size}")
+  @ApiModelProperty(notes = "Profile first name")
   private String firstName;
 
   @NotNull
   @Size(min=2, max=30, message="{lastName.size}")
+  @ApiModelProperty(notes = "Profile last name")
   private String lastName;
   
   @NotNull
   @Email
+  @ApiModelProperty(notes = "Profile email")
   private String email;
 
   private String imageFileName;
