@@ -60,9 +60,18 @@ public class ProfileController {
 //        return "registerForm";
 //    }
 
-    @PostMapping(value = "/register")
+    @PostMapping(value = "/{username}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Profile processRegistration(@Valid @RequestBody Profile profile) {
+    public Profile processRegistration(@PathVariable String username, @Valid @RequestBody Profile profile) {
+        if ((profile == null) || StringUtils.isEmpty(username)) {
+            throw new IllegalArgumentException("Profile username or data not provided");
+        }
+        if (StringUtils.isEmpty(profile.getUsername()) {
+            profile.setUsername(username);
+        }
+        if (!username.equals(profile)) {
+            throw new IllegalArgumentException("Profile username and parameter mismatch");
+        }
         profileRepository.save(profile);
         return profile;
     }
