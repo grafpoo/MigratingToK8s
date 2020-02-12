@@ -66,7 +66,7 @@ public class ProfileController {
         if ((profile == null) || StringUtils.isEmpty(username)) {
             throw new IllegalArgumentException("Profile username or data not provided");
         }
-        if (StringUtils.isEmpty(profile.getUsername()) {
+        if (StringUtils.isEmpty(profile.getUsername())) {
             profile.setUsername(username);
         }
         if (!username.equals(profile)) {
