@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.FileInputStream;
@@ -140,8 +139,7 @@ public class ProfileController {
     @RequestMapping(value = "/upload/{username}", method = POST)
     @Transactional
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> uploadImage(@PathVariable String username, @RequestParam("file") MultipartFile file,
-                                            RedirectAttributes redirectAttributes) {
+    public ResponseEntity<String> uploadImage(@PathVariable String username, @RequestParam("file") MultipartFile file) {
         log.debug("Updating image for: "+username);
         if (file.isEmpty()) {
             return ResponseEntity
