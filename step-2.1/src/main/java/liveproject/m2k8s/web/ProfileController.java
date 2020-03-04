@@ -56,12 +56,6 @@ public class ProfileController {
         this.profileRepository = profileRepository;
     }
 
-//    @GetMapping(value = "/register")
-//    public String showRegistrationForm(Model model) {
-//        model.addAttribute(new Profile());
-//        return "registerForm";
-//    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses({
