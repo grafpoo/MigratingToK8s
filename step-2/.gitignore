@@ -1,5 +1,4 @@
 /build/
-/target/
 /bin/
 .idea
 .springBeans
@@ -8,3 +7,4 @@
 .classpath
 .gradle
 .DS_Store
+profile-mvc-1.0.jar
