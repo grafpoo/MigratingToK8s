@@ -17,9 +17,12 @@ spring:
           auto: update
         show_sql: true
         format_sql: true
+        dialect: "org.hibernate.dialect.MySQL57Dialect"
 
 
 logging:
   level:
     root: info
 
+images:
+  directory: /data
