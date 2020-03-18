@@ -17,6 +17,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/profiles
       SPRING_DATASOURCE_USERNAME: empuser
       SPRING_DATASOURCE_PASSWORD: password
+    volumes:
+      - images-data:/data
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - backend
 
@@ -40,6 +42,7 @@ services:
 # Volumes
 volumes:
   db-data:
+  images-data:
 
 # Networks to be created to facilitate communication between containers
 networks:
