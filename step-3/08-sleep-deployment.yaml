@@ -1,40 +1,37 @@
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: profile
+  name: sleep
   namespace: liveproject
   labels:
-    app: profile
+    app: sleep
 spec:
   selector:
     matchLabels:
-      app: profile
+      app: sleep
       tier: service
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: profile
+        app: sleep
         tier: service
     spec:
       containers:
-      - image: grafpoo/profile-app
-        name: profile
+      - image: grafpoo/sleep-app
+        name: sleep
         env:
         - name: SPRING_DATASOURCE_URL
           value: jdbc:mysql://profile-mysql:3306/profiles
         - name: SPRING_DATASOURCE_USERNAME
-          value: root
+          value: empuser
         - name: SPRING_DATASOURCE_PASSWORD
           value: password
-        ports:
-        - containerPort: 8080
-          name: profile
-        volumeMounts:
-        - name: profile-persistent-storage
-          mountPath: /home
-      volumes:
-      - name: profile-persistent-storage
-        persistentVolumeClaim:
-          claimName: profile-pv-claim
+        livenessProbe:
+          exec:
+            command:
+            - cat
+            - /tmp/sleep
+          initialDelaySeconds: 5
+          periodSeconds: 5
