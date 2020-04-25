@@ -25,4 +25,4 @@ logging:
     root: info
 
 images:
-  directory: /data
+  directory: /tmp

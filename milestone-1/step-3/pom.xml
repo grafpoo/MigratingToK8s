@@ -8,7 +8,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.manning.pl</groupId>
-    <artifactId>profile-mvc</artifactId>
+    <artifactId>profile-api</artifactId>
     <version>1.0</version>
     <name>Profile Management</name>
     <description>Profile management</description>
