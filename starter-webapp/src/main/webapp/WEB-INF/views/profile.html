@@ -23,16 +23,6 @@
       <span th:text="${profile.firstName}">First</span> <span th:text="${profile.lastName}">Last</span><br/>
       <span th:text="${profile.email}">email</span>
     </div>
-    <div>
-      <p th:if="${imageMessage} != null" th:text="${imageMessage}"></p>
-      <p><img th:width="500" src="abc.png" th:attr="src=@{${'/profile/' +profile.username + '/image.jpg'}},alt=${profile.username}" /></p>
-      <form action="#" th:action="@{/profile/upload/{username}(username=${profile.username})}"
-            th:object="${profile}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" /><br/>
-        <input type="submit" value="Submit" />
-      </form>
-
-    </div>
 
     <div id="footer" th:include="page :: copy"></div>
   </body>
