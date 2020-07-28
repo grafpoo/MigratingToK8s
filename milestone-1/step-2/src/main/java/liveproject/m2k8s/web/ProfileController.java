@@ -2,6 +2,7 @@ package liveproject.m2k8s.web;
 
 import liveproject.m2k8s.Profile;
 import liveproject.m2k8s.data.ProfileRepository;
+import liveproject.m2k8s.service.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RequestMapping("/profile")
 public class ProfileController {
 
-    private ProfileRepository profileRepository;
+    private ProfileService profileService;
 
     @Value("${images.directory:/tmp}")
     private String uploadFolder;
@@ -46,8 +47,8 @@ public class ProfileController {
     private Resource defaultImage;
 
     @Autowired
-    public ProfileController(ProfileRepository profileRepository) {
-        this.profileRepository = profileRepository;
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
     }
 
     @RequestMapping(value = "/register", method = GET)
@@ -65,14 +66,14 @@ public class ProfileController {
             return "registerForm";
         }
 
-        profileRepository.save(profile);
+        profileService.save(profile);
         return "redirect:/profile/" + profile.getUsername();
     }
 
     @RequestMapping(value = "/{username}", method = GET)
     public String showProfile(@PathVariable String username, Model model) {
         log.debug("Reading model for: "+username);
-        Profile profile = profileRepository.findByUsername(username);
+        Profile profile = profileService.getProfile(username);
         model.addAttribute(profile);
         return "profile";
     }
@@ -81,7 +82,7 @@ public class ProfileController {
     @Transactional
     public String updateProfile(@PathVariable String username, @ModelAttribute Profile profile, Model model) {
         log.debug("Updating model for: "+username);
-        Profile dbProfile = profileRepository.findByUsername(username);
+        Profile dbProfile = profileService.getProfile(username);
         boolean dirty = false;
         if (!StringUtils.isEmpty(profile.getEmail())
                 && !profile.getEmail().equals(dbProfile.getEmail())) {
@@ -99,62 +100,10 @@ public class ProfileController {
             dirty = true;
         }
         if (dirty) {
-            profileRepository.save(dbProfile);
+            profileService.save(dbProfile);
         }
         model.addAttribute(profile);
         return "profile";
-    }
-
-    @RequestMapping(value = "/{username}/image.jpg", method = GET, produces = MediaType.IMAGE_JPEG_VALUE)
-    @ResponseBody
-    public byte[] displayImage(@PathVariable String username) throws IOException {
-        log.debug("Reading image for: "+username);
-        InputStream in = null;
-        try {
-            Profile profile = profileRepository.findByUsername(username);
-            if ((profile == null) || StringUtils.isEmpty(profile.getImageFileName())) {
-                in = defaultImage.getInputStream();
-            } else {
-                in = new FileInputStream(profile.getImageFileName());
-            }
-            return IOUtils.toByteArray(in);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-        }
-    }
-
-    @RequestMapping(value = "/upload/{username}", method = POST)
-    @Transactional
-    public String uploadImage(@PathVariable String username, @RequestParam("file") MultipartFile file,
-                              RedirectAttributes redirectAttributes) {
-        log.debug("Updating image for: "+username);
-        if (file.isEmpty()) {
-            redirectAttributes.addFlashAttribute("imageMessage", "Empty file - please select a file to upload");
-            return "redirect:/profile/" + username;
-        }
-        String fileName = file.getOriginalFilename();
-        if (!(fileName.endsWith("jpg") || fileName.endsWith("JPG"))) {
-            redirectAttributes.addFlashAttribute("imageMessage", "JPG files only - please select a file to upload");
-            return "redirect:/profile/" + username;
-        }
-        try {
-            final String contentType = file.getContentType();
-            // Get the file and save it somewhere
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(uploadFolder, username+".jpg");
-            Files.write(path, bytes);
-            Profile profile = profileRepository.findByUsername(username);
-            profile.setImageFileName(path.toString());
-            profile.setImageFileContentType(contentType);
-            profileRepository.save(profile);
-            redirectAttributes.addFlashAttribute("imageMessage",
-                    "You successfully uploaded '" + fileName + "'");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/profile/" + username;
     }
 
 }

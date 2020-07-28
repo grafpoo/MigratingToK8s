@@ -1,4 +1,4 @@
-package liveproject.m2k8s.web;
+package liveproject.m2k8s.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

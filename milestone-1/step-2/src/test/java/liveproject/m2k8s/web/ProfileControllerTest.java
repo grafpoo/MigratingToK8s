@@ -2,6 +2,7 @@ package liveproject.m2k8s.web;
 
 import liveproject.m2k8s.Profile;
 import liveproject.m2k8s.data.ProfileRepository;
+import liveproject.m2k8s.service.ProfileService;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,12 +29,12 @@ public class ProfileControllerTest {
   
   @Test
   public void shouldProcessRegistration() throws Exception {
-    ProfileRepository mockRepository = mock(ProfileRepository.class);
+    ProfileService profileService = mock(ProfileService.class);
     Profile unsaved = new Profile("jbauer", "24hours", "Jack", "Bauer", "jbauer@ctu.gov");
     Profile saved = new Profile(24L, "jbauer", "24hours", "Jack", "Bauer", "jbauer@ctu.gov");
-    when(mockRepository.save(unsaved)).thenReturn(saved);
+//    when(profileService.save(unsaved)).thenReturn(saved);
 
-    ProfileController controller = new ProfileController(mockRepository);
+    ProfileController controller = new ProfileController(profileService);
     MockMvc mockMvc = standaloneSetup(controller).build();
 
     mockMvc.perform(post("/profile/register")
@@ -44,7 +45,7 @@ public class ProfileControllerTest {
            .param("email", "jbauer@ctu.gov"))
            .andExpect(redirectedUrl("/profile/jbauer"));
     
-    verify(mockRepository, atLeastOnce()).save(unsaved);
+    verify(profileService, atLeastOnce()).save(unsaved);
   }
 
   @Test
@@ -60,8 +61,8 @@ public class ProfileControllerTest {
   }
 
   private ProfileController buildProfileController() {
-    ProfileRepository mockRepository = mock(ProfileRepository.class);
-    ProfileController controller = new ProfileController(mockRepository);
+    ProfileService profileService = mock(ProfileService.class);
+    ProfileController controller = new ProfileController(profileService);
     return controller;
   }
 }
