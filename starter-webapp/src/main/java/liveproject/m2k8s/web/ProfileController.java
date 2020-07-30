@@ -9,7 +9,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,27 +67,11 @@ public class ProfileController {
     @RequestMapping(value = "/{username}", method = POST)
     @Transactional
     public String updateProfile(@PathVariable String username, @ModelAttribute Profile profile, Model model) {
+        if (!username.equals(profile.getUsername())) {
+            throw new RuntimeException("Cannot change username for Profile");
+        }
         log.debug("Updating model for: "+username);
-        Profile dbProfile = profileService.getProfile(username);
-        boolean dirty = false;
-        if (!StringUtils.isEmpty(profile.getEmail())
-                && !profile.getEmail().equals(dbProfile.getEmail())) {
-            dbProfile.setEmail(profile.getEmail());
-            dirty = true;
-        }
-        if (!StringUtils.isEmpty(profile.getFirstName())
-                && !profile.getFirstName().equals(dbProfile.getFirstName())) {
-            dbProfile.setFirstName(profile.getFirstName());
-            dirty = true;
-        }
-        if (!StringUtils.isEmpty(profile.getLastName())
-                && !profile.getLastName().equals(dbProfile.getLastName())) {
-            dbProfile.setLastName(profile.getLastName());
-            dirty = true;
-        }
-        if (dirty) {
-            profileService.save(dbProfile);
-        }
+        profileService.update(profile);
         model.addAttribute(profile);
         return "profile";
     }
