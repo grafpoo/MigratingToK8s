@@ -2,8 +2,10 @@ package liveproject.m2k8s.service;
 
 import liveproject.m2k8s.Profile;
 import liveproject.m2k8s.data.ProfileRepository;
+import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class ProfileService {
@@ -20,5 +22,28 @@ public class ProfileService {
 
     public void save(Profile profile) {
         profileRepository.save(profile);
+    }
+
+    public void update(Profile profile) {
+        Profile dbProfile = profileRepository.findByUsername(profile.getUsername());
+        boolean dirty = false;
+        if (!StringUtils.isEmpty(profile.getEmail())
+                && !profile.getEmail().equals(dbProfile.getEmail())) {
+            dbProfile.setEmail(profile.getEmail());
+            dirty = true;
+        }
+        if (!StringUtils.isEmpty(profile.getFirstName())
+                && !profile.getFirstName().equals(dbProfile.getFirstName())) {
+            dbProfile.setFirstName(profile.getFirstName());
+            dirty = true;
+        }
+        if (!StringUtils.isEmpty(profile.getLastName())
+                && !profile.getLastName().equals(dbProfile.getLastName())) {
+            dbProfile.setLastName(profile.getLastName());
+            dirty = true;
+        }
+        if (dirty) {
+            profileRepository.save(profile);
+        }
     }
 }
