@@ -93,28 +93,8 @@ public class ProfileController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
     })
-
-    public ResponseEntity<Profile>  updateProfile(@RequestBody Profile profile) {
-        Profile dbProfile = profileService.getProfile(profile.getUsername());
-        boolean dirty = false;
-        if (!StringUtils.isEmpty(profile.getEmail())
-                && !profile.getEmail().equals(dbProfile.getEmail())) {
-            dbProfile.setEmail(profile.getEmail());
-            dirty = true;
-        }
-        if (!StringUtils.isEmpty(profile.getFirstName())
-                && !profile.getFirstName().equals(dbProfile.getFirstName())) {
-            dbProfile.setFirstName(profile.getFirstName());
-            dirty = true;
-        }
-        if (!StringUtils.isEmpty(profile.getLastName())
-                && !profile.getLastName().equals(dbProfile.getLastName())) {
-            dbProfile.setLastName(profile.getLastName());
-            dirty = true;
-        }
-        if (dirty) {
-            profileService.save(dbProfile);
-        }
+    public ResponseEntity<Profile>  updateProfile(@Valid @RequestBody Profile profile) {
+        profileService.update(profile);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(profile);

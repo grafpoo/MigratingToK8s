@@ -16,10 +16,12 @@ public class ProfileServiceTest {
     private ProfileRepository profileRepository = Mockito.mock(ProfileRepository.class);
     private ProfileService profileService;
 
+    private Profile zasu;
+
     @Before
     public void setup() {
         profileService = new ProfileService(profileRepository);
-        Profile zasu = Profile.builder()
+        zasu = Profile.builder()
                 .id(1L)
                 .firstName("Zasu")
                 .lastName("Pitts")
@@ -33,6 +35,6 @@ public class ProfileServiceTest {
     @Test
     public void test_getProfile() {
         Profile zasupitts = profileService.getProfile("zasupitts");
-        assertEquals("Zasu", zasupitts.getFirstName());
+        assertEquals(zasu, zasupitts);
     }
 }
