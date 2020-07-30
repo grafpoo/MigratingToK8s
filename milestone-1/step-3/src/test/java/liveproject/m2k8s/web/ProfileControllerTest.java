@@ -2,46 +2,29 @@ package liveproject.m2k8s.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import liveproject.m2k8s.Profile;
-import liveproject.m2k8s.data.ProfileRepository;
+import liveproject.m2k8s.service.ProfileService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.StreamUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -55,7 +38,7 @@ public class ProfileControllerTest {
   private MockMvc mockMvc;
 
   @MockBean
-  private ProfileRepository profileRepository;
+  private ProfileService profileService;
 
   private Profile unsaved;
   private Profile saved;
@@ -69,7 +52,7 @@ public class ProfileControllerTest {
   @Test
   public void getProfile_whenAppContainsProfile_returnProfileSuccessfully() throws Exception {
 
-    when(profileRepository.findByUsername(any())).thenReturn(saved);
+    when(profileService.getProfile(any())).thenReturn(saved);
 
     String savedJson = objectMapper.writeValueAsString(saved);
 
@@ -81,16 +64,16 @@ public class ProfileControllerTest {
 
   @Test
   public void shouldProcessRegistration() throws Exception {
-    when(profileRepository.save(unsaved)).thenReturn(saved);
+//    when(profileService.save(unsaved)).thenReturn(saved);
 
     String profileJson = objectMapper.writeValueAsString(unsaved);
 
-    mockMvc.perform(post("/profile/register")
+    mockMvc.perform(post("/profile")
             .content(profileJson)
             .contentType(MediaType.APPLICATION_JSON_UTF8))
             .andDo(print())
             .andExpect(status().isCreated());
 
-    verify(profileRepository, atLeastOnce()).save(unsaved);
+    verify(profileService, atLeastOnce()).save(unsaved);
   }
 }

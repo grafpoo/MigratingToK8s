@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import liveproject.m2k8s.Profile;
 import liveproject.m2k8s.data.ProfileRepository;
+import liveproject.m2k8s.service.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RequestMapping("/profile")
 public class ProfileController {
 
-    private ProfileRepository profileRepository;
+    private ProfileService profileService;
 
     @Value("${images.directory:/tmp}")
     private String uploadFolder;
@@ -52,20 +53,20 @@ public class ProfileController {
     private Resource defaultImage;
 
     @Autowired
-    public ProfileController(ProfileRepository profileRepository) {
-        this.profileRepository = profileRepository;
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "201", description = "CREATED"),
             @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
     })
     public ResponseEntity<?> processRegistration(@Valid @RequestBody Profile profile) {
-        profileRepository.save(profile);
+        profileService.save(profile);
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.CREATED)
                 .body(profile);
     }
 
@@ -75,7 +76,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "NOT_FOUND")
     })
     public ResponseEntity<Profile>  showProfile(@PathVariable String username) {
-        Profile profile = profileRepository.findByUsername(username);
+        Profile profile = profileService.getProfile(username);
         if (profile == null) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
@@ -92,8 +93,9 @@ public class ProfileController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
     })
+
     public ResponseEntity<Profile>  updateProfile(@RequestBody Profile profile) {
-        Profile dbProfile = profileRepository.findByUsername(profile.getUsername());
+        Profile dbProfile = profileService.getProfile(profile.getUsername());
         boolean dirty = false;
         if (!StringUtils.isEmpty(profile.getEmail())
                 && !profile.getEmail().equals(dbProfile.getEmail())) {
@@ -111,120 +113,11 @@ public class ProfileController {
             dirty = true;
         }
         if (dirty) {
-            profileRepository.save(dbProfile);
+            profileService.save(dbProfile);
         }
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(profile);
-    }
-
-    @RequestMapping(value = "/{username}/image", method = GET, produces = MediaType.IMAGE_JPEG_VALUE)
-    @ResponseBody
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
-    })
-    public ResponseEntity<?> displayImage(@PathVariable String username) {
-        log.debug("Reading image for: " + username);
-        InputStream in = null;
-        try {
-            Profile profile = profileRepository.findByUsername(username);
-            if ((profile == null) || StringUtils.isEmpty(profile.getImageFileName())) {
-                in = defaultImage.getInputStream();
-            } else {
-                in = new FileInputStream(profile.getImageFileName());
-            }
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(IOUtils.toByteArray(in));
-        } catch (IOException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + e.getMessage());
-        } finally {
-            if (in != null) {
-                try { in.close(); } catch (IOException e) { e.printStackTrace(); }
-            }
-        }
-    }
-
-    @Transactional
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
-    })
-    @PostMapping(value = "/{username}/image",consumes = { "multipart/form-data" })
-    ResponseEntity<?> writeImage(@PathVariable String username,
-                                      @RequestParam("file") MultipartFile file) {
-        log.debug("Updating image for: "+username);
-        if (file.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Empty file - please select a file to upload");
-        }
-        String fileName = file.getOriginalFilename();
-        if (!(fileName.endsWith("jpg") || fileName.endsWith("JPG"))) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("JPG files only - please select a file to upload");
-        }
-        try {
-            final String contentType = file.getContentType();
-            // Get the file and save it somewhere
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(uploadFolder, username+".jpg");
-            Files.write(path, bytes);
-            Profile profile = profileRepository.findByUsername(username);
-            profile.setImageFileName(path.toString());
-            profile.setImageFileContentType(contentType);
-            profileRepository.save(profile);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body("You successfully uploaded '" + fileName + "'");
-        } catch (IOException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + e.getMessage());
-        }
-    }
-
-    @RequestMapping(value = "/upload/{username}", method = POST)
-    @Transactional
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
-    })
-    public ResponseEntity<String> uploadImage(@PathVariable String username, @RequestParam("file") MultipartFile file) {
-        log.debug("Updating image for: "+username);
-        if (file.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Empty file - please select a file to upload");
-        }
-        String fileName = file.getOriginalFilename();
-        if (!(fileName.endsWith("jpg") || fileName.endsWith("JPG"))) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("JPG files only - please select a file to upload");
-        }
-        try {
-            final String contentType = file.getContentType();
-            // Get the file and save it somewhere
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(uploadFolder, username+".jpg");
-            Files.write(path, bytes);
-            Profile profile = profileRepository.findByUsername(username);
-            profile.setImageFileName(path.toString());
-            profile.setImageFileContentType(contentType);
-            profileRepository.save(profile);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body("You successfully uploaded '" + fileName + "'");
-        } catch (IOException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + e.getMessage());
-        }
     }
 
 }
