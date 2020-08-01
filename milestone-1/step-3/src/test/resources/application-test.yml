@@ -1,0 +1,19 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        show_sql: true
+        format_sql: true
+        dialect: "org.hibernate.dialect.H2Dialect"
+  datasource:
+    url: jdbc:h2:mem:db_example
+    driver-class-name: org.h2.Driver
+    generate-unique-name: true
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: mappings
