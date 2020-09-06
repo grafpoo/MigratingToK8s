@@ -1,16 +1,16 @@
 package liveproject.m2k8s.service;
 
-import liveproject.m2k8s.Profile;
-import liveproject.m2k8s.data.ProfileRepository;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
+import liveproject.m2k8s.Profile;
+import liveproject.m2k8s.data.ProfileRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProfileServiceTest {

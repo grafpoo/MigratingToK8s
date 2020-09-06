@@ -1,7 +1,11 @@
 package liveproject.m2k8s.config;
 
-import liveproject.m2k8s.Application;
-import org.hibernate.cfg.Environment;
+import java.util.Properties;
+
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+
+import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.ClassUtils;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.util.Properties;
+import liveproject.m2k8s.Application;
 
 @Configuration
 @EnableTransactionManagement
@@ -45,11 +47,11 @@ class JpaConfig {
         entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         Properties jpaProperties = new Properties();
-        jpaProperties.put(Environment.DIALECT, dialect);
-        jpaProperties.put(Environment.HBM2DDL_AUTO, hbm2ddlAuto);
-        jpaProperties.put(Environment.SHOW_SQL, showSql);
-        jpaProperties.put(Environment.FORMAT_SQL, formatSql);
-        jpaProperties.put(Environment.USE_SQL_COMMENTS, useSqlComments);
+        jpaProperties.put(AvailableSettings.DIALECT, dialect);
+        jpaProperties.put(AvailableSettings.HBM2DDL_AUTO, hbm2ddlAuto);
+        jpaProperties.put(AvailableSettings.SHOW_SQL, showSql);
+        jpaProperties.put(AvailableSettings.FORMAT_SQL, formatSql);
+        jpaProperties.put(AvailableSettings.USE_SQL_COMMENTS, useSqlComments);
         entityManagerFactoryBean.setJpaProperties(jpaProperties);
 
         return entityManagerFactoryBean;
