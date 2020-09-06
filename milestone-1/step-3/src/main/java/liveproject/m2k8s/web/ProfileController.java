@@ -1,46 +1,27 @@
 package liveproject.m2k8s.web;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import liveproject.m2k8s.Profile;
-import liveproject.m2k8s.data.ProfileRepository;
-import liveproject.m2k8s.service.ProfileService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.concurrent.Callable;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import liveproject.m2k8s.Profile;
+import liveproject.m2k8s.service.ProfileService;
 
 @RestController
-@Slf4j
 @RequestMapping("/profile")
 public class ProfileController {
 
@@ -48,9 +29,6 @@ public class ProfileController {
 
     @Value("${images.directory:/tmp}")
     private String uploadFolder;
-
-    @Value("classpath:ghost.jpg")
-    private Resource defaultImage;
 
     @Autowired
     public ProfileController(ProfileService profileService) {
