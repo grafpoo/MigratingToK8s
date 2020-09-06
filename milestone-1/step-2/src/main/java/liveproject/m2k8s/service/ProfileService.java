@@ -1,11 +1,11 @@
 package liveproject.m2k8s.service;
 
-import liveproject.m2k8s.Profile;
-import liveproject.m2k8s.data.ProfileRepository;
-import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import liveproject.m2k8s.Profile;
+import liveproject.m2k8s.data.ProfileRepository;
 
 @Service
 public class ProfileService {

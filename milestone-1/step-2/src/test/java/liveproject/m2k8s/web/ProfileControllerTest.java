@@ -1,15 +1,8 @@
 package liveproject.m2k8s.web;
 
-import liveproject.m2k8s.Profile;
-import liveproject.m2k8s.data.ProfileRepository;
-import liveproject.m2k8s.service.ProfileService;
-import org.junit.jupiter.api.Test;
-import org.springframework.test.web.servlet.MockMvc;
-
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -17,6 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.test.web.servlet.MockMvc;
+
+import liveproject.m2k8s.Profile;
+import liveproject.m2k8s.service.ProfileService;
 
 public class ProfileControllerTest {
 
