@@ -6,8 +6,10 @@ metadata:
   labels:
     app: profile
 spec:
+  type: LoadBalancer
   ports:
     - port: 8080
+      targetPort: 8080
   selector:
     app: profile
     tier: service

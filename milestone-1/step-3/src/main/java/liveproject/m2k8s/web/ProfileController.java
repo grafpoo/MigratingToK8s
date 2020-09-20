@@ -25,7 +25,7 @@ import liveproject.m2k8s.service.ProfileService;
 @RequestMapping("/profile")
 public class ProfileController {
 
-    private ProfileService profileService;
+    private final ProfileService profileService;
 
     @Value("${images.directory:/tmp}")
     private String uploadFolder;
