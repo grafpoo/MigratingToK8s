@@ -13,7 +13,7 @@
         <hibernateVersion>4.1.6.Final</hibernateVersion>
         <hibernateEntityManagerVersion>4.0.1.Final</hibernateEntityManagerVersion>
         <thymeleafVersion>2.1.3.RELEASE</thymeleafVersion>
-        <h2-version>1.4.182</h2-version>
+        <h2-version>2.1.210</h2-version>
         <hibernateValidatorVersion>5.0.1.Final</hibernateValidatorVersion>
         <commonsLangVersion>3.1</commonsLangVersion>
         <servletApiVersion>3.1.0</servletApiVersion>
